@@ -10,12 +10,6 @@
 
 ---
 
-## ⭐ Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=wuzhenbang0930/myself-agent&type=Timeline)](https://star-history.com/#wuzhenbang0930/myself-agent&Timeline)
-
----
-
 ## 🎯 项目简介
 
 Myself Agent 是一个基于 **LangChain Deep Agents SDK** 构建的智能助手项目，集成了任务规划、文件管理、子智能体生成等核心能力。
@@ -213,6 +207,10 @@ export const customRules: Rule[] = [
 | 📙 DashScope 控制台 | [阿里云控制台](https://dashscope.console.aliyun.com/) |
 
 ---
+
+## ⭐ Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=wuzhenbang0930/myself-agent&type=Timeline)](https://star-history.com/#wuzhenbang0930/myself-agent&Timeline)
 
 **License:** MIT © 2024
 
