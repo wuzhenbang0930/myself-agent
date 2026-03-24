@@ -1,17 +1,6 @@
-# ╔══════════════════════════════════════════════════╗
-# ║                                                  ║
-# ║   ██████╗  ██████╗ ██████╗ ████████╗           ║
-# ║   ██╔══██╗██╔═══██╗██╔══██╗╚══██╔══╝           ║
-# ║   ██████╔╝██║   ██║██║  ██║   ██║              ║
-# ║   ██╔═══╝ ██║   ██║██║  ██║   ██║              ║
-# ║   ██║     ╚██████╔╝██████╔╝   ██║              ║
-# ║   ╚═╝      ╚═════╝ ╚═════╝    ╚═╝              ║
-# ║                                                  ║
-# ║          🤖  MYSELF AI AGENT  🤖                ║
-# ║                                                  ║
-# ╚══════════════════════════════════════════════════╝
+# MYSELF AI AGENT
 
-> 🚀 基于 **LangChain Deep Agents SDK** 的智能助手
+> 基于 **LangChain Deep Agents SDK** 的智能助手
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)]()
 [![Node.js](https://img.shields.io/badge/Node.js-20+-339933?style=for-the-badge&logo=node.js&logoColor=white)]()
@@ -68,19 +57,15 @@ Myself Agent 是一个基于 **LangChain Deep Agents SDK** 构建的智能助手
 ## 📁 项目结构
 
 ```
-┌─────────────────────────────────────────┐
-│  myself-agent/                         │
-├─────────────────────────────────────────┤
-│  ├── 📂 src/                           │
-│  │    ├── 📁 config/      # 配置管理   │
-│  │    ├── 📁 tools/      # 工具定义   │
-│  │    ├── 📁 agents/     # 智能体     │
-│  │    ├── 📁 extensions/  # 扩展功能   │
-│  │    └── 📄 main.ts     # 主程序     │
-│  ├── 📄 .env            # 环境变量    │
-│  ├── 📄 nodemon.json    # 热更新配置  │
-│  └── 📄 tsconfig.json    # TS 配置    │
-└─────────────────────────────────────────┘
+myself-agent/
+├── src/
+│   ├── config/         # 配置管理
+│   ├── tools/         # 工具定义
+│   ├── agents/        # 智能体
+│   └── extensions/     # 扩展功能
+├── .env               # 环境变量
+├── nodemon.json       # 热更新配置
+└── tsconfig.json      # TS 配置
 ```
 
 ---
@@ -223,10 +208,6 @@ export const customRules: Rule[] = [
 
 ---
 
-```
-╔══════════════════════════════════════════════════╗
-║  Made with ❤️  using LangChain Deep Agents SDK ║
-╚══════════════════════════════════════════════════╝
-```
-
 **License:** MIT © 2024
+
+**Made with ❤️ using LangChain Deep Agents SDK**
