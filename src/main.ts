@@ -1,172 +1,218 @@
 import * as readline from "readline";
 import { createAgent } from "./agents";
-import { Listr } from "listr2";
+import pc from "picocolors";
 
-// 禁用 LangChain 详细日志，只显示关键信息
 process.env.LANGCHAIN_TRACING_V2 = "false";
 process.env.LANGCHAIN_VERBOSE = "false";
 
-/**
- * 交互式开发服务器
- */
-async function startInteractiveServer() {
-	console.log("\n" + "=".repeat(60));
-	console.log("🚀 Deep Agents 交互式开发服务器");
-	console.log("=".repeat(60));
+// 赛博朋克配色
+const c = {
+  cyan: (t: string) => pc.cyan(t),
+  magenta: (t: string) => pc.magenta(t),
+  green: (t: string) => pc.green(t),
+  yellow: (t: string) => pc.yellow(t),
+  red: (t: string) => pc.red(t),
+  dim: (t: string) => pc.dim(t),
+  bold: (t: string) => pc.bold(t),
+  white: (t: string) => pc.white(t),
+  bgCyan: (t: string) => pc.bgCyan(pc.black(t)),
+  bgMagenta: (t: string) => pc.bgMagenta(pc.black(t)),
+};
 
-	try {
-		// 创建智能体（异步）
-		const agent = await createAgent();
-		console.log("\n✅ 智能体已就绪");
-		console.log("📌 模型: qwen-plus (阿里云 DashScope)");
-		console.log("🔧 工具: 天气查询、计算器、执行系统命令行");
-		console.log("\n💡 输入消息开始对话，输入 'exit' 或 'quit' 退出");
-		console.log("💡 输入 'clear' 清空对话历史");
-		console.log("=".repeat(60) + "\n");
+// 加载动画
+const frames = ["█", "▓", "▒", "░", "▒", "▓"];
+let loadingIndex = 0;
+let loadingInterval: NodeJS.Timeout | null = null;
 
-		// 创建 readline 接口
-		const rl = readline.createInterface({
-			input: process.stdin,
-			output: process.stdout,
-			prompt: "> ",
-		});
-
-		// 对话历史
-		const conversationHistory: Array<{ role: string; content: string }> =
-			[];
-
-		rl.prompt();
-
-		rl.on("line", async (input) => {
-			const trimmedInput = input.trim();
-
-			// 处理命令
-			if (trimmedInput === "exit" || trimmedInput === "quit") {
-				console.log("\n👋 再见！");
-				rl.close();
-				process.exit(0);
-			}
-
-			if (trimmedInput === "clear") {
-				conversationHistory.length = 0;
-				console.log("✅ 对话历史已清空\n");
-				rl.prompt();
-				return;
-			}
-
-			if (!trimmedInput) {
-				rl.prompt();
-				return;
-			}
-
-			try {
-				// 添加用户消息到历史
-				conversationHistory.push({
-					role: "user",
-					content: trimmedInput,
-				});
-
-				// 显示思考中
-				process.stdout.write("🤖 思考中...\r");
-
-				try {
-					// 调用智能体
-					const result = await (agent as any).invoke({
-						messages: conversationHistory,
-					});
-
-					// 清除思考中
-					process.stdout.write("\r" + " ".repeat(20) + "\r");
-
-					// 检查是否有工具调用
-					const aiMessages = result.messages.filter(
-						(msg: any) =>
-							msg.tool_calls && msg.tool_calls.length > 0,
-					);
-
-					if (aiMessages.length > 0) {
-						// 使用 listr2 创建任务列表
-						const tasks = new Listr<any>(
-							aiMessages.flatMap((msg: any) =>
-								msg.tool_calls.map((call: any) => {
-									let title = "";
-									let task = async () => {
-										return "完成";
-									};
-
-									if (
-										call.name === "execute_command" &&
-										call.args &&
-										call.args.command
-									) {
-										title = `$ ${call.args.command}`;
-									} else if (
-										call.name === "get_weather" &&
-										call.args &&
-										call.args.city
-									) {
-										title = `🌤️ 查询天气: ${call.args.city}`;
-									} else if (
-										call.name === "calculator" &&
-										call.args &&
-										call.args.expression
-									) {
-										title = `🔢 计算: ${call.args.expression}`;
-									} else {
-										title = `🔧 调用工具: ${call.name}`;
-									}
-
-									return {
-										title,
-										task,
-									};
-								}),
-							),
-							{
-								concurrent: true,
-								exitOnError: false,
-							},
-						);
-
-						await tasks.run();
-					}
-
-					// 获取助手回复
-					const lastMessage =
-						result.messages[result.messages.length - 1];
-					const content =
-						typeof lastMessage.content === "string"
-							? lastMessage.content
-							: JSON.stringify(lastMessage.content);
-
-					// 添加助手消息到历史
-					conversationHistory.push({ role: "assistant", content });
-
-					// 显示回复
-					console.log(`\n🤖 ${content}\n`);
-				} catch (error: any) {
-					// 清除思考中并显示错误
-					process.stdout.write("\r" + " ".repeat(20) + "\r");
-					throw error;
-				}
-			} catch (error: any) {
-				console.error(`\n❌ 错误: ${error.message || error}\n`);
-			}
-
-			rl.prompt();
-		});
-
-		rl.on("close", () => {
-			process.exit(0);
-		});
-	} catch (error: any) {
-		console.error("\n❌ 启动失败:", error.message || error);
-		console.error("\n请检查:");
-		console.error("1. .env 文件中的 API Key 是否正确");
-		console.error("2. 网络连接是否正常");
-		process.exit(1);
-	}
+function startLoading(text: string) {
+  if (loadingInterval) return;
+  loadingIndex = 0;
+  loadingInterval = setInterval(() => {
+    const f = c.cyan(frames[loadingIndex % frames.length]);
+    process.stdout.write(`\r${f} ${c.dim(text)}`);
+    loadingIndex++;
+  }, 60);
 }
 
-// 启动服务器
-startInteractiveServer();
+function stopLoading() {
+  if (loadingInterval) {
+    clearInterval(loadingInterval);
+    loadingInterval = null;
+    process.stdout.write("\r" + "\x1B[K");
+  }
+}
+
+// 类型
+interface ToolCall {
+  name: string;
+  args: any;
+  result?: string;
+}
+
+// 赛博朋克头部
+function printHeader() {
+  console.log(c.dim("╔") + c.cyan("═".repeat(48)) + c.dim("╗"));
+  console.log(c.dim("║") + c.bold(c.cyan("  MYSELF.AI  ")) + c.magenta(">>") + c.dim(" ".repeat(32)) + c.dim("║"));
+  console.log(c.dim("╠") + c.cyan("═".repeat(48)) + c.dim("╣"));
+  console.log(c.dim("║") + c.green(" [SYS] ") + c.dim("模型在线") + c.dim(" ".repeat(33)) + c.dim("║"));
+  console.log(c.dim("╚") + c.cyan("═".repeat(48)) + c.dim("╝"));
+}
+
+// 赛博朋克工具面板
+function printTools(tools: ToolCall[]) {
+  if (!tools || tools.length === 0) return;
+  
+  console.log(c.dim("╔") + c.magenta("─".repeat(46)) + c.dim("╗"));
+  tools.forEach(tool => {
+    console.log(c.dim("║") + c.green(" ◆ ") + c.cyan(tool.name) + c.dim(" ".repeat(Math.max(0, 40 - tool.name.length))) + c.dim("║"));
+    if (tool.args.command) console.log(c.dim("║") + c.yellow(" > ") + c.white(tool.args.command.slice(0, 42)) + c.dim(" ".repeat(Math.max(0, 43 - tool.args.command.length))) + c.dim("║"));
+    if (tool.args.expression) console.log(c.dim("║") + c.yellow(" = ") + c.white(tool.args.expression) + c.dim(" ".repeat(Math.max(0, 43 - tool.args.expression.length))) + c.dim("║"));
+    if (tool.args.city) console.log(c.dim("║") + c.yellow("@ ") + c.white(tool.args.city) + c.dim(" ".repeat(Math.max(0, 43 - tool.args.city.length))) + c.dim("║"));
+    if (tool.result) console.log(c.dim("║") + c.green(" → ") + c.dim(tool.result.slice(0, 42)) + c.dim(" ".repeat(Math.max(0, 43 - tool.result.slice(0, 42).length))) + c.dim("║"));
+  });
+  console.log(c.dim("╚") + c.magenta("─".repeat(46)) + c.dim("╝"));
+}
+
+// 赛博朋克分隔线
+function divider() {
+  console.log(c.dim("├") + c.cyan("─".repeat(48)) + c.dim("┤"));
+}
+
+// 赛博朋克底部输入
+function printPrompt() {
+  console.log(c.dim("╔") + c.cyan("═".repeat(48)) + c.dim("╗"));
+  console.log(c.dim("║") + c.magenta(" >>> ") + c.dim(" ".repeat(43)) + c.dim("║"));
+  console.log(c.dim("╚") + c.cyan("═".repeat(48)) + c.dim("╝"));
+}
+
+// 赛博朋克帮助
+function printHelp() {
+  console.log(c.dim("║") + c.bold(c.yellow(" 命令")) + c.dim(" ".repeat(41)) + c.dim("║"));
+  console.log(c.dim("║") + c.green(" clear ") + c.dim("清空") + c.dim(" ".repeat(37)) + c.dim("║"));
+  console.log(c.dim("║") + c.green(" exit  ") + c.dim("退出") + c.dim(" ".repeat(38)) + c.dim("║"));
+}
+
+// Markdown 简化渲染
+function renderMD(text: string) {
+  if (!text) return "";
+  text = text.replace(/```\w*\n[\s\S]*?```/g, (m) => {
+    const code = m.replace(/```\w*\n?/g, "").trim();
+    return "\n" + c.dim("┌" + "─".repeat(40) + "┐\n") + 
+           code.split("\n").slice(0, 4).map(l => c.dim("│") + c.yellow(l.slice(0, 40).padEnd(40)) + c.dim("│")).join("\n") + 
+           "\n" + c.dim("└" + "─".repeat(40) + "┘");
+  });
+  text = text.replace(/\*\*(.+?)\*\*/g, c.bold("$1"));
+  text = text.replace(/^### (.+)$/gm, "\n" + c.cyan(" ▸ $1"));
+  text = text.replace(/^## (.+)$/gm, "\n" + c.cyan(" ▸▸ $1"));
+  text = text.replace(/^# (.+)$/gm, "\n" + c.cyan(" ▸▸▸ $1"));
+  text = text.replace(/^- (.+)$/gm, "  " + c.green("▸") + " $1");
+  text = text.replace(/`([^`]+)`/g, c.yellow("$1"));
+  return text;
+}
+
+async function startServer() {
+  printHeader();
+  divider();
+  printHelp();
+  printPrompt();
+  
+  try {
+    startLoading("初始化中");
+    const agent = await createAgent();
+    stopLoading();
+    console.log(`\r${c.green("█")} ${c.green("系统就绪")}\n`);
+    
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    
+    const messages: any[] = [];
+    
+    process.stdout.write(c.magenta(" >>> "));
+    
+    rl.on("line", async (input) => {
+      const cmd = input.trim().toLowerCase();
+      
+      if (cmd === "exit" || cmd === "quit") {
+        console.log(`\n${c.green("█")} ${c.cyan("再见!")}\n`);
+        rl.close();
+        process.exit(0);
+      }
+      
+      if (cmd === "clear" || cmd === "c") {
+        messages.length = 0;
+        console.log();
+        printHeader();
+        divider();
+        printHelp();
+        printPrompt();
+        process.stdout.write(c.magenta(" >>> "));
+        return;
+      }
+      
+      if (!input.trim()) {
+        process.stdout.write(c.magenta(" >>> "));
+        return;
+      }
+      
+      process.stdout.write("\r" + "\x1B[K");
+      startLoading("处理中");
+      
+      try {
+        messages.push({ role: "user", content: input.trim() });
+        const result = await (agent as any).invoke({ messages: [...messages] });
+        stopLoading();
+        
+        // 收集工具
+        const tools: ToolCall[] = [];
+        result.messages.forEach((msg: any) => {
+          if (msg.tool_calls) {
+            msg.tool_calls.forEach((tc: any) => {
+              tools.push({ name: tc.name, args: tc.args || {} });
+            });
+          }
+          if (msg.tool_call_id && tools.length > 0) {
+            tools[tools.length - 1].result = typeof msg.content === "string" ? msg.content : "";
+          }
+        });
+        
+        // 最终回复
+        const lastMsg = result.messages[result.messages.length - 1];
+        let content = typeof lastMsg.content === "string" ? lastMsg.content : "";
+        
+        messages.push({ role: "assistant", content });
+        
+        // 显示
+        console.log();
+        divider();
+        
+        if (tools.length > 0) {
+          printTools(tools);
+          divider();
+        }
+        
+        if (content.trim()) {
+          console.log(renderMD(content.trim()));
+        }
+        
+        console.log();
+        
+      } catch (err: any) {
+        stopLoading();
+        console.log(`\n${c.red("█")} ${c.red("错误:")} ${err.message}\n`);
+      }
+      
+      process.stdout.write(c.magenta(" >>> "));
+    });
+    
+    rl.on("close", () => process.exit(0));
+    
+  } catch (err: any) {
+    stopLoading();
+    console.log(`\n${c.red("█")} ${c.red("启动失败:")} ${err.message}\n`);
+    process.exit(1);
+  }
+}
+
+startServer();
