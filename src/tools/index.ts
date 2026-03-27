@@ -1,5 +1,6 @@
 import * as z from "zod";
 import { tool } from "langchain";
+import { execSync } from "child_process";
 
 /**
  * 示例工具：获取天气
@@ -49,6 +50,31 @@ export const calculatorTool = tool(
 );
 
 /**
+ * 工具：执行系统命令行
+ */
+export const executeCommandTool = tool(
+	({ command }: { command: string }) => {
+		try {
+			// 执行系统命令并返回输出
+			const output = execSync(command, {
+				encoding: "utf-8",
+				timeout: 30000,
+			});
+			return `命令执行成功:\n${output}`;
+		} catch (error: any) {
+			return `命令执行失败: ${error.message}\n错误输出: ${error.stdout || error.stderr}`;
+		}
+	},
+	{
+		name: "execute_command",
+		description: "执行系统命令行命令",
+		schema: z.object({
+			command: z.string().describe("要执行的系统命令行命令"),
+		}),
+	},
+);
+
+/**
  * 所有工具列表
  */
-export const allTools = [getWeatherTool, calculatorTool];
+export const allTools = [getWeatherTool, calculatorTool, executeCommandTool];

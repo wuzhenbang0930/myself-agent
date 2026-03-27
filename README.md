@@ -2,57 +2,60 @@
 
 > 基于 **LangChain Deep Agents SDK** 的智能助手
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)]()
-[![Node.js](https://img.shields.io/badge/Node.js-20+-339933?style=for-the-badge&logo=node.js&logoColor=white)]()
-[![LangChain](https://img.shields.io/badge/LangChain-1.0+-FF6B6B?style=for-the-badge&logo=chainlink&logoColor=white)]()
-[![Deep Agents](https://img.shields.io/badge/Deep%20Agents-1.8+-00D9FF?style=for-the-badge&logo=robot&logoColor=white)]()
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)]()
+[!\[TypeScript\](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge\&logo=typescript\&logoColor=white null)]()
+[!\[Node.js\](https://img.shields.io/badge/Node.js-20+-339933?style=for-the-badge\&logo=node.js\&logoColor=white null)]()
+[!\[LangChain\](https://img.shields.io/badge/LangChain-1.0+-FF6B6B?style=for-the-badge\&logo=chainlink\&logoColor=white null)]()
+[!\[Deep Agents\](https://img.shields.io/badge/Deep%20Agents-1.8+-00D9FF?style=for-the-badge\&logo=robot\&logoColor=white null)]()
+[!\[License\](https://img.shields.io/badge/License-MIT-green?style=for-the-badge null)]()
 
----
+***
 
 ## 🎯 项目简介
 
-Myself Agent 是一个基于 **LangChain Deep Agents SDK** 构建的智能助手项目，集成了任务规划、文件管理、子智能体生成等核心能力。
+Myself Agent 是一个基于 **LangChain Deep Agents SDK** 构建的智能助手项目，集成了任务规划、文件管理、子智能体生成等核心能力，支持优雅的命令行交互体验。
 
 ### ✨ 核心特性
 
-| 特性 | 说明 |
-|-----|------|
-| 🤖 **Deep Agents SDK** | LangChain 官方智能体框架 |
-| 🔧 **工具系统** | 可扩展的工具集 |
-| 📋 **规则引擎** | 自定义业务规则 |
-| 🔄 **热更新** | 开发体验友好 |
-| 🌐 **多模型支持** | OpenAI / DashScope / Anthropic |
+| 特性                     | 说明                             |
+| ---------------------- | ------------------------------ |
+| 🤖 **Deep Agents SDK** | LangChain 官方智能体框架              |
+| 🔧 **工具系统**            | 可扩展的工具集，包括系统命令执行               |
+| 📋 **规则引擎**            | 自定义业务规则                        |
+| 🔄 **热更新**             | 开发体验友好                         |
+| 🌐 **多模型支持**           | OpenAI / DashScope / Anthropic |
+| 💻 **优雅 CLI**          | 类似 claudecode 的命令行展示           |
+| ⚡ **任务列表**             | 使用 listr2 展示工具调用流程             |
 
----
+***
 
 ## 🛠️ 技术选型
 
 ### 核心框架
 
-| 技术 | 版本 | 说明 |
-|-----|------|------|
-| `deepagents` | ^1.8.5 | 智能体框架 |
-| `langchain` | ^1.2.36 | 核心库 |
-| `@langchain/core` | ^1.1.35 | 核心抽象 |
-| `@langchain/openai` | ^1.3.0 | OpenAI 兼容接口 |
+| 技术                  | 版本      | 说明          |
+| ------------------- | ------- | ----------- |
+| `deepagents`        | ^1.8.5  | 智能体框架       |
+| `langchain`         | ^1.2.36 | 核心库         |
+| `@langchain/core`   | ^1.1.35 | 核心抽象        |
+| `@langchain/openai` | ^1.3.0  | OpenAI 兼容接口 |
 
 ### 开发工具
 
-| 技术 | 版本 | 说明 |
-|-----|------|------|
-| `typescript` | ^6.0.2 | 类型安全 |
-| `ts-node` | ^10.9.2 | 直接运行 TS |
-| `nodemon` | ^3.1.14 | 热更新 |
+| 技术           | 版本      | 说明      |
+| ------------ | ------- | ------- |
+| `typescript` | ^6.0.2  | 类型安全    |
+| `ts-node`    | ^10.9.2 | 直接运行 TS |
+| `nodemon`    | ^3.1.14 | 热更新     |
 
 ### 工具库
 
-| 技术 | 版本 | 说明 |
-|-----|------|------|
-| `zod` | ^4.3.6 | Schema 验证 |
-| `dotenv` | ^17.3.1 | 环境变量 |
+| 技术       | 版本      | 说明        |
+| -------- | ------- | --------- |
+| `zod`    | ^4.3.6  | Schema 验证 |
+| `dotenv` | ^17.3.1 | 环境变量      |
+| `listr2` | ^8.2.0  | 任务列表展示    |
 
----
+***
 
 ## 📁 项目结构
 
@@ -62,13 +65,14 @@ myself-agent/
 │   ├── config/         # 配置管理
 │   ├── tools/         # 工具定义
 │   ├── agents/        # 智能体
-│   └── extensions/     # 扩展功能
+│   └── main.ts        # 主入口
 ├── .env               # 环境变量
-├── nodemon.json       # 热更新配置
-└── tsconfig.json      # TS 配置
+├── package.json        # 依赖配置
+├── tsconfig.json      # TS 配置
+└── README.md          # 项目文档
 ```
 
----
+***
 
 ## 🚀 开发步骤
 
@@ -116,48 +120,67 @@ npm run build
 npm start
 ```
 
----
+***
 
 ## 📖 使用说明
 
 ### 交互命令
 
-| 命令 | 说明 |
-|-----|------|
-| `exit` / `quit` | 退出程序 |
-| `clear` | 清空对话历史 |
+| 命令              | 说明     |
+| --------------- | ------ |
+| `exit` / `quit` | 退出程序   |
+| `clear`         | 清空对话历史 |
+
+### 可用工具
+
+| 工具           | 说明       | 示例         |
+| ------------ | -------- | ---------- |
+| 🔧 **执行命令**  | 执行系统命令行  | `执行命令 pwd` |
+| 🌤️ **天气查询** | 查询指定城市天气 | `查询北京天气`   |
+| 🔢 **计算器**   | 执行数学计算   | `计算 2 + 3` |
+
+### 命令行展示
+
+项目采用类似 claudecode 的优雅命令行展示：
+
+```
+> 执行命令 pwd
+✔ $ pwd
+
+🤖 当前工作目录是：`/Users/username/Desktop/myself-agent`
+```
 
 ### 可用模型
 
-| 模型 | 速度 | 推荐场景 |
-|-----|------|---------|
-| `qwen-turbo` | ⚡ 快速 | 测试/开发 |
-| `qwen-plus` | 💨 标准 | 日常使用 ⭐ |
-| `qwen-max` | 💪 高性能 | 复杂任务 |
+| 模型           | 速度     | 推荐场景   |
+| ------------ | ------ | ------ |
+| `qwen-turbo` | ⚡ 快速   | 测试/开发  |
+| `qwen-plus`  | 💨 标准  | 日常使用 ⭐ |
+| `qwen-max`   | 💪 高性能 | 复杂任务   |
 
----
+***
 
 ## 🏷️ NPM Keywords
 
 ```json
 {
-  "keywords": [
-    "langchain",
-    "deep-agents",
-    "ai-agent",
-    "openai",
-    "dashscope",
-    "llm",
-    "typescript",
-    "chatbot",
-    "autonomous-agent",
-    "artificial-intelligence",
-    "nodejs"
-  ]
+	"keywords": [
+		"langchain",
+		"deep-agents",
+		"ai-agent",
+		"openai",
+		"dashscope",
+		"llm",
+		"typescript",
+		"chatbot",
+		"autonomous-agent",
+		"artificial-intelligence",
+		"nodejs"
+	]
 }
 ```
 
----
+***
 
 ## 🔧 扩展开发
 
@@ -168,15 +191,39 @@ npm start
 import { tool } from "langchain";
 import * as z from "zod";
 
-export const myTool = tool(
-  ({ param }) => result,
-  {
-    name: "my_tool",
-    description: "工具描述",
-    schema: z.object({
-      param: z.string().describe("参数"),
-    }),
-  }
+export const myTool = tool(({ param }) => result, {
+	name: "my_tool",
+	description: "工具描述",
+	schema: z.object({
+		param: z.string().describe("参数"),
+	}),
+});
+```
+
+### 系统命令执行工具
+
+项目已内置系统命令执行工具，可以执行任意系统命令：
+
+```typescript
+export const executeCommandTool = tool(
+	({ command }: { command: string }) => {
+		try {
+			const output = execSync(command, {
+				encoding: "utf-8",
+				timeout: 30000,
+			});
+			return `命令执行成功:\n${output}`;
+		} catch (error: any) {
+			return `命令执行失败: ${error.message}`;
+		}
+	},
+	{
+		name: "execute_command",
+		description: "执行系统命令行命令",
+		schema: z.object({
+			command: z.string().describe("要执行的系统命令行命令"),
+		}),
+	},
 );
 ```
 
@@ -185,33 +232,34 @@ export const myTool = tool(
 ```typescript
 // src/extensions/rules.ts
 export const customRules: Rule[] = [
-  {
-    id: "rule-1",
-    name: "自定义规则",
-    condition: "触发词",
-    action: "执行动作",
-    priority: 8,
-    enabled: true,
-  },
+	{
+		id: "rule-1",
+		name: "自定义规则",
+		condition: "触发词",
+		action: "执行动作",
+		priority: 8,
+		enabled: true,
+	},
 ];
 ```
 
----
+***
 
 ## 📚 相关资源
 
-| 资源 | 链接 |
-|-----|------|
-| 📘 Deep Agents 文档 | [官方文档](https://docs.langchain.com/deepagents) |
-| 📗 LangChain 文档 | [官方文档](https://docs.langchain.com) |
-| 📙 DashScope 控制台 | [阿里云控制台](https://dashscope.console.aliyun.com/) |
+| 资源                | 链接                                              |
+| ----------------- | ----------------------------------------------- |
+| 📘 Deep Agents 文档 | [官方文档](https://docs.langchain.com/deepagents)   |
+| 📗 LangChain 文档   | [官方文档](https://docs.langchain.com)              |
+| 📙 DashScope 控制台  | [阿里云控制台](https://dashscope.console.aliyun.com/) |
+| 🎨 listr2 文档      | [官方文档](https://listr2.kilic.dev/)               |
 
----
+***
 
 ## ⭐ Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=wuzhenbang0930/myself-agent&type=Timeline)](https://star-history.com/#wuzhenbang0930/myself-agent&Timeline)
+[!\[Star History Chart\](https://api.star-history.com/svg?repos=wuzhenbang0930/myself-agent\&type=Timeline null)](https://star-history.com/#wuzhenbang0930/myself-agent\&Timeline)
 
-**License:** MIT © 2024
+**License:** MIT © 2026
 
 **Made with ❤️ using LangChain Deep Agents SDK**
